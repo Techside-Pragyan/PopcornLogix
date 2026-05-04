@@ -11,6 +11,7 @@ data_dir = '../data/ml-latest-small'
 movies = pd.read_csv(f'{data_dir}/movies.csv')
 ratings = pd.read_csv(f'{data_dir}/ratings.csv')
 tags = pd.read_csv(f'{data_dir}/tags.csv')
+links = pd.read_csv(f'{data_dir}/links.csv')
 
 # --- Content-Based Filtering ---
 print("Preparing content-based features...")
@@ -102,6 +103,10 @@ with open('tfidf_matrix.pkl', 'wb') as f:
 with open('item_factors_collab.pkl', 'wb') as f:
     pickle.dump(item_factors_aligned, f)
 
-unified_movies[['movieId', 'title', 'genres']].to_csv('movies_processed.csv', index=False)
+# Merge links to get imdbId
+unified_movies = pd.merge(unified_movies, links[['movieId', 'imdbId']], on='movieId', how='left')
+# Format imdbId to have 7 digits with leading zeros
+unified_movies['imdbId'] = unified_movies['imdbId'].fillna(0).astype(int).astype(str).str.zfill(7)
+unified_movies[['movieId', 'title', 'genres', 'imdbId']].to_csv('movies_processed.csv', index=False)
 
 print("Training complete! Models saved in model/")
