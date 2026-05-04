@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load Models and Data
+# Load Models and Data (Reload Triggered)
 MODEL_DIR = '../model'
 print("Loading models and data into memory...")
 

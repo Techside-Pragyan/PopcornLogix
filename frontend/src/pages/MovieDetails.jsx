@@ -39,12 +39,20 @@ function MovieDetails() {
 
   if (!movie) return <div className="loader">Loading...</div>;
 
-  const placeholderImg = `https://via.placeholder.com/600x900/2b303b/f5f5f5?text=${encodeURIComponent(movie.title)}`;
+  const fallbackImg = `https://placehold.co/600x900/2b303b/f5f5f5?text=${encodeURIComponent(movie.title)}`;
+  const posterUrl = movie.imdbId && movie.imdbId !== '0000000' 
+    ? `https://images.metahub.space/poster/large/tt${movie.imdbId}/img`
+    : fallbackImg;
 
   return (
     <div className="animate-fade-in">
       <div className="movie-details-container">
-        <img src={placeholderImg} alt={movie.title} className="details-poster" />
+        <img 
+          src={posterUrl} 
+          alt={movie.title} 
+          className="details-poster" 
+          onError={(e) => { e.target.onerror = null; e.target.src = fallbackImg; }}
+        />
         
         <div className="details-content">
           <h1 className="details-title">{movie.title}</h1>
